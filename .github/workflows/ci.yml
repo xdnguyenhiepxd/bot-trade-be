@@ -36,7 +36,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.EC2_HOST }}
-          key: ${{ secret.EC2_KEY}}
+          key: ${{ secrets.EC2_KEY}}
           script: |
             docker rm -f book-stalker-be
             docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest || true
