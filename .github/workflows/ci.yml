@@ -38,8 +38,8 @@ jobs:
           username: ${{ secrets.EC2_HOST }}
           key: ${{ secrets.EC2_KEY}}
           script: |
-            docker rm -f book-stalker-be
+            docker rm -f book-stalker-be || true
             docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest || true
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest
-            docker run -itd --restart always -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest --name book-stalker-be
+            docker run -itd --restart always --name book-stalker-be -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest
 
