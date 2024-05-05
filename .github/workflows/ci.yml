@@ -1,0 +1,43 @@
+name: ci
+on:
+  pull_request:
+    branches: ['*']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Login dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Build and push to test
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.EC2_HOST }}
+          key: ${{ secret.EC2_KEY}}
+          script: |
+            docker rm -f book-stalker-be
+            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest
+            docker run -itd --restart always -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/book-stalker-be:latest --name book-stalker-be
+
