@@ -13,6 +13,12 @@ export class Tracker {
 
   @Prop({ required: true, default: Date.now() })
   lastVisit: number
+  
+  @Prop({ required: true, default: 0 })
+  currentPage: number
+
+  @Prop({ required: true, default: 0 })
+  totalPage: number
 }
 
 export const TrackerSchema = SchemaFactory.createForClass(Tracker)
