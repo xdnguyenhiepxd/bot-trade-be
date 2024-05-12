@@ -1,8 +1,8 @@
 export interface IMessageResponse {
-	message: string;
+  message: string
 }
 
 export interface IMessageDataResponse<T> {
-	message: string;
-	data: T;
+  message: string
+  data: T
 }

@@ -1,18 +1,18 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
+import { HydratedDocument } from "mongoose"
 
-export type TrackerDocument = HydratedDocument<Tracker>;
+export type TrackerDocument = HydratedDocument<Tracker>
 
 @Schema()
 export class Tracker {
-	@Prop({ required: true })
-	userId: string;
+  @Prop({ required: true })
+  userId: string
 
-	@Prop({ required: true })
-	bookId: string;
+  @Prop({ required: true })
+  bookId: string
 
-	@Prop({ required: true, default: Date.now() })
-	lastVisit: number;
+  @Prop({ required: true, default: Date.now() })
+  lastVisit: number
 }
 
-export const TrackerSchema = SchemaFactory.createForClass(Tracker);
+export const TrackerSchema = SchemaFactory.createForClass(Tracker)
