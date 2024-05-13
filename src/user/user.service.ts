@@ -32,7 +32,7 @@ export class UserService {
 
   async register({ email, password }: Register) {
     const user = await this.userModel.findOne({ email })
-    if (user) throw new BadRequestException("The email is already existed")
+    if (user) throw new BadRequestException("Tài khoản đã tồn tại")
     const newUser = new this.userModel({
       email,
       name: email.split("@")[0],
@@ -44,10 +44,9 @@ export class UserService {
 
   async login({ email, password }: Login) {
     const user = await this.userModel.findOne({ email })
-    if (!user) throw new BadRequestException("Email is not exist")
+    if (!user) throw new BadRequestException("Tài khoản không tồn tại")
     const isValidPassword = bcrypt.compareSync(password, user.passwordHash)
-    if (!isValidPassword) throw new BadRequestException("Password is incorrect")
-    const { passwordHash: _, ...userInfo } = user.toObject()
+    if (!isValidPassword) throw new BadRequestException("Mật khẩu chưa đúng")
     return this.signUser(user)
   }
 

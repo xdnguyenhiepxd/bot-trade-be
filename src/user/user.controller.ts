@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Get,
-  Patch,
   Post,
   UploadedFile,
   UseGuards,
@@ -29,8 +28,8 @@ export class UserController {
   @Post("login")
   async login(@Body() dto: Login) {
     const { email, password } = dto
-    if (!email) throw new BadRequestException("Missing email")
-    if (!password) throw new BadRequestException("Missing password")
+    if (!email) throw new BadRequestException("Hãy nhập email của bạn")
+    if (!password) throw new BadRequestException("Hãy nhập mật khẩu")
     const user = await this.userService.login(dto)
     return user
   }
@@ -45,7 +44,7 @@ export class UserController {
       properties: { file: { type: "string", format: "binary" } },
     },
   })
-  @Patch("update-avatar")
+  @Post("update-avatar")
   async changeAvatar(
     @UploadedFile(imageParseFilePipeBuilder)
     file: any
