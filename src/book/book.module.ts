@@ -1,4 +1,5 @@
 import { ImageGateway } from "@/services/image.gateway.service"
+import { Tracker, TrackerSchema } from "@/tracker/tracker.schema"
 import { JwtStrategy } from "@/user/guards/jwt.strategy"
 import { User, UserSchema } from "@/user/user.schema"
 import { UserService } from "@/user/user.service"
@@ -12,6 +13,7 @@ import { BookService } from "./book.service"
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([{ name: Book.name, schema: BookSchema }]),
+    MongooseModule.forFeature([{ name: Tracker.name, schema: TrackerSchema }]),
   ],
   controllers: [BookController],
   providers: [UserService, BookService, JwtStrategy, ImageGateway],

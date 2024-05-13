@@ -1,3 +1,4 @@
+import { Tracker, TrackerDocument } from "@/tracker/tracker.schema"
 import { UserDocument } from "@/user/user.schema"
 import { Inject, Injectable } from "@nestjs/common"
 import { REQUEST } from "@nestjs/core"
@@ -10,6 +11,7 @@ export class BookService {
   constructor(
     @Inject(REQUEST) private readonly request: { user: UserDocument },
     @InjectModel(Book.name) private bookModel: Model<BookDocument>,
+    @InjectModel(Tracker.name) private trackerModel: Model<TrackerDocument>,
     private readonly imageKitService: ImageGateway
   ) {}
 

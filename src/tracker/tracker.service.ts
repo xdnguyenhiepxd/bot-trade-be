@@ -17,9 +17,28 @@ export class TrackerService {
 
   list() {
     const { user } = this.request
-    console.log("HEHE", user.id)
     return true
-
     // return this.trackerModel.find({ userId: user._id })
+  }
+
+  async update({ bookId, currentPage, totalPage, lastVisit }: TrackerDocument) {
+    const { user } = this.request
+
+    const tracker = await this.trackerModel.findOne({ userId: user._id.toString(), bookId })
+    if (!tracker) {
+      const newTracker = new this.trackerModel({
+        userId: user._id.toString(),
+        bookId,
+        currentPage,
+        totalPage,
+        lastVisit,
+      })
+      await newTracker.save()
+      return newTracker
+    }
+    tracker.currentPage = currentPage
+    tracker.lastVisit = lastVisit
+    await tracker.save()
+    return tracker
   }
 }
