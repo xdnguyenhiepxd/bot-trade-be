@@ -19,7 +19,16 @@ export class CategoryService {
   }
 
   async findAll() {
-    return this.categoryModel.find().exec()
+    return this.categoryModel.find(
+      {
+        isActive: true,
+      },
+      {
+        name: 1,
+        description: 1,
+        image: 1,
+      }
+    )
   }
 
   async findOne(id: string) {
