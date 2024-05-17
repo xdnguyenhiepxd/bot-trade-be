@@ -22,15 +22,19 @@ export class CategoryService {
     return this.categoryModel.find().exec()
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return this.categoryModel.findById(id).exec()
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryModel.findOne({ name: updateCategoryDto.name })
+    if (category) {
+      throw new BadRequestException("Category with this name already exists")
+    }
     return this.categoryModel.findByIdAndUpdate(id, updateCategoryDto, { new: true }).exec()
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return this.categoryModel.findByIdAndRemove(id).exec()
   }
 }
