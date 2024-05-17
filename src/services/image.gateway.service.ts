@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import environments from "src/helpers/environments"
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 var ImageKit = require("imagekit")
 @Injectable()
 export class ImageGateway {

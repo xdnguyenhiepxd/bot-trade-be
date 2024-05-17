@@ -3,11 +3,17 @@ import { Body, Controller, Get, Param, Post, UploadedFile, UseGuards, UseInterce
 import { FileInterceptor } from "@nestjs/platform-express"
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger"
 import { BookService } from "./book.service"
+import { CreateBookDto } from "@/book/book.dto"
 
 @ApiTags("Book")
 @Controller("book")
 export class BookController {
   constructor(private readonly bookService: BookService) {}
+
+  @Post()
+  async createBook(@Body() dto: CreateBookDto) {
+    return await this.bookService.create(dto)
+  }
 
   @Get()
   async userBooks() {

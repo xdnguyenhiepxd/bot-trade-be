@@ -1,22 +1,32 @@
+import { Book, BookDocument } from "@/book/book.schema"
+import { Category, CategoryDocument } from "@/category/category.schema"
+import databases from "@/database/database.map"
 import { ImageGateway } from "@/services/image.gateway.service"
-import { Tracker, TrackerSchema } from "@/tracker/tracker.schema"
+import { Tracker, TrackerDocument } from "@/tracker/tracker.schema"
 import { JwtStrategy } from "@/user/guards/jwt.strategy"
-import { User, UserSchema } from "@/user/user.schema"
 import { UserService } from "@/user/user.service"
-import { Module } from "@nestjs/common"
-import { MongooseModule } from "@nestjs/mongoose"
+import { Module, OnApplicationBootstrap } from "@nestjs/common"
+import { InjectModel, MongooseModule } from "@nestjs/mongoose"
+import { Model } from "mongoose"
 import { BookController } from "./book.controller"
-import { Book, BookSchema } from "./book.schema"
 import { BookService } from "./book.service"
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    MongooseModule.forFeature([{ name: Book.name, schema: BookSchema }]),
-    MongooseModule.forFeature([{ name: Tracker.name, schema: TrackerSchema }]),
-  ],
+  imports: [MongooseModule.forFeature(databases)],
   controllers: [BookController],
   providers: [UserService, BookService, JwtStrategy, ImageGateway],
   exports: [UserService, BookService, ImageGateway],
 })
-export class BookModule {}
+export class BookModule implements OnApplicationBootstrap {
+  constructor(
+    @InjectModel(Book.name) private bookModel: Model<BookDocument>,
+    @InjectModel(Tracker.name) private trackerModel: Model<TrackerDocument>,
+    @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>
+  ) {}
+  async onApplicationBootstrap() {
+    console.log("[BookModule] onApplicationBootstrap")
+    const categories = await this.categoryModel.find()
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)]
+    console.log("randomCategory", randomCategory) // console by M-MON
+  }
+}
