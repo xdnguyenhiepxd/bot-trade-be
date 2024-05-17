@@ -1,9 +1,10 @@
 import { JwtGuard } from "@/user/guards/jwt.guard"
 import { Body, Controller, Get, Param, Put, UseGuards } from "@nestjs/common"
-import { ApiBearerAuth } from "@nestjs/swagger"
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger"
 import { TrackerDocument } from "./tracker.schema"
 import { TrackerService } from "./tracker.service"
 
+@ApiTags("tracker")
 @Controller("tracker")
 export class TrackerController {
   constructor(private readonly trackerService: TrackerService) {}
