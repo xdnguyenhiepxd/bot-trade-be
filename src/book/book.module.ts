@@ -25,8 +25,8 @@ export class BookModule implements OnApplicationBootstrap {
   ) {}
   async onApplicationBootstrap() {
     console.log("[BookModule] onApplicationBootstrap")
-    const categories = await this.categoryModel.find()
-    const randomCategory = categories[Math.floor(Math.random() * categories.length)]
-    console.log("randomCategory", randomCategory) // console by M-MON
+    // const categories = await this.categoryModel.find()
+    // const randomCategory = categories[Math.floor(Math.random() * categories.length)]
+    // console.log("randomCategory", randomCategory) // console by M-MON
   }
 }
