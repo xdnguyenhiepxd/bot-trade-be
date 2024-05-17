@@ -6,6 +6,7 @@ import { BookModule } from "./book/book.module"
 import environments from "./helpers/environments"
 import { TrackerModule } from "./tracker/tracker.module"
 import { UserModule } from "./user/user.module"
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from "./user/user.module"
     UserModule,
     BookModule,
     TrackerModule,
+    CategoryModule,
   ],
 })
 export class AppModule {}
