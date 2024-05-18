@@ -18,8 +18,8 @@ export class ReadTimeController {
   }
 
   @Get()
-  // @UseGuards(JwtGuard)
-  // @ApiBearerAuth()
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   async findAll(@Query() query: GetReadTimeDto) {
     return this.readTimeService.findAll(query)
   }
