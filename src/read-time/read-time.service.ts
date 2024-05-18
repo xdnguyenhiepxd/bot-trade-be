@@ -1,5 +1,6 @@
 import { Book, BookDocument } from "@/book/book.schema"
 import { Category, CategoryDocument } from "@/category/category.schema"
+import { ETypeTime, GetReadTimeDto } from "@/read-time/dto/read-time.dto"
 import { ReadTime, ReadTimeDocument } from "@/read-time/read-time.schema"
 import { Tracker, TrackerDocument } from "@/tracker/tracker.schema"
 import { UserDocument } from "@/user/user.schema"
@@ -32,6 +33,7 @@ export class ReadTimeService {
     const { user } = this.request
     const userId = user?.id
     const readTimeOld = await this.readTimeModel.findOne({ bookId: createReadTimeDto.bookId }).sort({ createdAt: -1 })
+
     if (readTimeOld) {
       if (readTimeOld.createdAt) {
         const time = new Date().getTime() - readTimeOld.createdAt.getTime()
@@ -54,8 +56,66 @@ export class ReadTimeService {
     return true
   }
 
-  findAll() {
-    return `This action returns all readTime`
+  async findAll(query: GetReadTimeDto) {
+    const typeTime = query?.type || ETypeTime.DAY
+
+    // Define the date aggregation based on the typeTime
+    let dateAggregation
+    switch (typeTime) {
+      case ETypeTime.DAY:
+        dateAggregation = { $hour: "$createdAt" }
+        break
+      case ETypeTime.WEEK:
+        dateAggregation = { $dayOfWeek: "$createdAt" }
+        break
+      case ETypeTime.MONTH:
+        dateAggregation = { $month: "$createdAt" }
+        break
+      case ETypeTime.YEAR:
+        dateAggregation = { $year: "$createdAt" }
+        break
+      default:
+        throw new BadRequestException("Invalid typeTime")
+    }
+
+    // Use aggregation to group by createdAt and count the documents
+    const readTimeStats = await this.readTimeModel.aggregate([
+      {
+        $group: {
+          _id: dateAggregation,
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by date
+      },
+    ])
+
+    // Initialize an array to hold the results
+    let result
+    if (typeTime === ETypeTime.DAY) {
+      result = new Array(24).fill(0).map((_, index) => ({
+        time: `${index}h`,
+        value: 0,
+      }))
+    } else if (typeTime === ETypeTime.WEEK) {
+      result = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => ({
+        time: day,
+        value: 0,
+      }))
+    }
+
+    // Update the count for each time unit
+    for (const stat of readTimeStats) {
+      if (typeTime === ETypeTime.DAY) {
+        result[stat._id].value = stat.count
+      } else if (typeTime === ETypeTime.WEEK) {
+        const dayIndex = (stat._id + 5) % 7 // This will convert 1 (Sunday) to 0 (Monday), 2 (Monday) to 1 (Tuesday), etc.
+        result[dayIndex].value = stat.count
+      }
+    }
+
+    return result
   }
 
   findOne(id: number) {

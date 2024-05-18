@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common"
+import { GetReadTimeDto } from "@/read-time/dto/read-time.dto"
+import { JwtGuard } from "@/user/guards/jwt.guard"
+import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common"
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger"
 import { CreateReadTimeDto } from "./dto/create-read-time.dto"
-import { UpdateReadTimeDto } from "./dto/update-read-time.dto"
 import { ReadTimeService } from "./read-time.service"
-import { JwtGuard } from "@/user/guards/jwt.guard"
 
 @ApiTags("read-time")
 @Controller("read-time")
@@ -18,10 +18,11 @@ export class ReadTimeController {
   }
 
   @Get()
-  findAll() {
-    return this.readTimeService.findAll()
+  // @UseGuards(JwtGuard)
+  // @ApiBearerAuth()
+  async findAll(@Query() query: GetReadTimeDto) {
+    return this.readTimeService.findAll(query)
   }
-
   // @Get(":id")
   // findOne(@Param("id") id: string) {
   //   return this.readTimeService.findOne(+id)
