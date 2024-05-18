@@ -69,10 +69,10 @@ export class ReadTimeService {
         dateAggregation = { $dayOfWeek: "$createdAt" }
         break
       case ETypeTime.MONTH:
-        dateAggregation = { $month: "$createdAt" }
+        dateAggregation = { $dayOfMonth: "$createdAt" }
         break
       case ETypeTime.YEAR:
-        dateAggregation = { $year: "$createdAt" }
+        dateAggregation = { $month: "$createdAt" }
         break
       default:
         throw new BadRequestException("Invalid typeTime")
@@ -103,6 +103,20 @@ export class ReadTimeService {
         time: day,
         value: 0,
       }))
+    } else if (typeTime === ETypeTime.MONTH) {
+      // Get the number of days in the current month
+      const now = new Date()
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+
+      result = new Array(daysInMonth).fill(0).map((_, index) => ({
+        time: `${index + 1}`,
+        value: 0,
+      }))
+    } else if (typeTime === ETypeTime.YEAR) {
+      result = new Array(12).fill(0).map((_, index) => ({
+        time: `${index + 1}`,
+        value: 0,
+      }))
     }
 
     // Update the count for each time unit
@@ -112,6 +126,10 @@ export class ReadTimeService {
       } else if (typeTime === ETypeTime.WEEK) {
         const dayIndex = (stat._id + 5) % 7 // This will convert 1 (Sunday) to 0 (Monday), 2 (Monday) to 1 (Tuesday), etc.
         result[dayIndex].value = stat.count
+      } else if (typeTime === ETypeTime.MONTH) {
+        result[stat._id - 1].value = stat.count // Subtract 1 because array indices start at 0
+      } else if (typeTime === ETypeTime.YEAR) {
+        result[stat._id - 1].value = stat.count // Subtract 1 because array indices start at 0
       }
     }
 
