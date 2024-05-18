@@ -24,12 +24,12 @@ export class TrackerController {
   }
 
   // @Put(":trackerId/read-time/:bookId")
-  @Put(":trackerId/read-time/:bookId")
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth()
-  updateReadTime(@Param("trackerId") trackerId: string, @Param("bookId") bookId: string) {
-    return this.trackerService.updateReadTime(trackerId, bookId)
-  }
+  // @Put(":trackerId/read-time/:bookId")
+  // @UseGuards(JwtGuard)
+  // @ApiBearerAuth()
+  // updateReadTime(@Param("trackerId") trackerId: string, @Param("bookId") bookId: string) {
+  //   return this.trackerService.updateReadTime(trackerId, bookId)
+  // }
 
   @Put("")
   @UseGuards(JwtGuard)
