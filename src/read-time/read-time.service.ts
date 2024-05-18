@@ -58,6 +58,8 @@ export class ReadTimeService {
 
   async findAll(query: GetReadTimeDto) {
     const typeTime = query?.type || ETypeTime.DAY
+    const { user } = this.request
+    const userId = user?.id
 
     // Define the date aggregation based on the typeTime
     let dateAggregation
@@ -80,6 +82,9 @@ export class ReadTimeService {
 
     // Use aggregation to group by createdAt and count the documents
     const readTimeStats = await this.readTimeModel.aggregate([
+      {
+        $match: { ownerId: userId }, // Only consider documents with the correct ownerId
+      },
       {
         $group: {
           _id: dateAggregation,
