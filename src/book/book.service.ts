@@ -2,7 +2,7 @@ import { CreateBookDto } from "@/book/book.dto"
 import { Category, CategoryDocument } from "@/category/category.schema"
 import { Tracker, TrackerDocument } from "@/tracker/tracker.schema"
 import { UserDocument } from "@/user/user.schema"
-import { BadRequestException, Inject, Injectable, OnApplicationBootstrap } from "@nestjs/common"
+import { BadRequestException, Inject, Injectable } from "@nestjs/common"
 import { REQUEST } from "@nestjs/core"
 import { InjectModel } from "@nestjs/mongoose"
 import { Model } from "mongoose"
@@ -36,7 +36,6 @@ export class BookService {
       const randomCategory = categories[Math.floor(Math.random() * categories.length)]
       // throw new BadRequestException("Category not found")
       books.categoryId = randomCategory.id
-
     }
 
     const newBook = new this.bookModel({
@@ -51,8 +50,8 @@ export class BookService {
     return this.bookModel.find()
   }
 
-  async get(id: string) {
-    return this.bookModel.findOne({ id })
+  async get(_id: string) {
+    return this.bookModel.findOne({ _id })
   }
 
   async upload(name: string, file: any) {
