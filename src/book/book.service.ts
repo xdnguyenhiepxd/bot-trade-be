@@ -1,5 +1,6 @@
-import { CreateBookDto } from "@/book/book.dto"
+import { CreateBookDto, GetBookDto } from "@/book/book.dto"
 import { Category, CategoryDocument } from "@/category/category.schema"
+import { ESortType } from "@/dtos/paginate.dto"
 import { Tracker, TrackerDocument } from "@/tracker/tracker.schema"
 import { UserDocument } from "@/user/user.schema"
 import { BadRequestException, Inject, Injectable } from "@nestjs/common"
@@ -46,8 +47,25 @@ export class BookService {
     return newBook
   }
 
-  async list() {
-    return this.bookModel.find()
+  async list(query: GetBookDto) {
+    const { take = 1, page = 1, categoryId, search = "", sort_type } = query
+
+    let queryBuilder = this.bookModel.find()
+
+    if (categoryId) {
+      queryBuilder = queryBuilder.where("categoryId", categoryId)
+    }
+
+    if (search) {
+      queryBuilder = queryBuilder.where("name", new RegExp(search, "i"))
+    }
+
+    queryBuilder = queryBuilder
+      .sort({ createdAt: sort_type === ESortType.ASC ? -1 : 1 })
+      .skip((page - 1) * take)
+      .limit(take)
+
+    return queryBuilder.exec()
   }
 
   async get(_id: string) {

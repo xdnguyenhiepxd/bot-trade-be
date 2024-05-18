@@ -1,9 +1,9 @@
+import { CreateBookDto, GetBookDto } from "@/book/book.dto"
 import { JwtGuard } from "@/user/guards/jwt.guard"
-import { Body, Controller, Get, Param, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common"
+import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common"
 import { FileInterceptor } from "@nestjs/platform-express"
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger"
 import { BookService } from "./book.service"
-import { CreateBookDto } from "@/book/book.dto"
 
 @ApiTags("Book")
 @Controller("book")
@@ -16,8 +16,8 @@ export class BookController {
   }
 
   @Get()
-  async userBooks() {
-    return await this.bookService.list()
+  async userBooks(@Query() query: GetBookDto) {
+    return await this.bookService.list(query)
   }
 
   @Get(":id")
