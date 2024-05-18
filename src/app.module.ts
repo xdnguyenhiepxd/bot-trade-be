@@ -7,6 +7,7 @@ import environments from "./helpers/environments"
 import { TrackerModule } from "./tracker/tracker.module"
 import { UserModule } from "./user/user.module"
 import { CategoryModule } from './category/category.module';
+import { ReadTimeModule } from './read-time/read-time.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CategoryModule } from './category/category.module';
     BookModule,
     TrackerModule,
     CategoryModule,
+    ReadTimeModule,
   ],
 })
 export class AppModule {}
