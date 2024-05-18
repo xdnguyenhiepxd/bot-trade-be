@@ -50,7 +50,7 @@ export class BookService {
   }
 
   async list(query: GetBookDto) {
-    const { take = 1, page = 1, categoryId, search = "", sort_type } = query
+    const { take = 20, page = 1, categoryId, search = "", sort_type } = query
 
     let queryBuilder = this.bookModel.find()
 
@@ -67,7 +67,13 @@ export class BookService {
       .skip((page - 1) * take)
       .limit(take)
 
-    return queryBuilder.exec()
+    const data = await queryBuilder.exec()
+    const count = await this.bookModel.count(queryBuilder)
+
+    return {
+      data,
+      count,
+    }
   }
 
   async get(_id: string) {
