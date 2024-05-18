@@ -5,7 +5,7 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MmZkN2JlYTJlNmRhMGUwNGJkMTc1NCIsImVtYWlsIjoib25lcGVyY21hbkBnbWFpbC5jb20iLCJuYW1lIjoib25lcGVyY21hbiIsImlhdCI6MTcxNjAxNTU4NiwiZXhwIjoxNzE2MTAxOTg2fQ.kpeL6tu40mDqi8xC27cIW77rmzb5XDBpvMsGq494bkU
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>

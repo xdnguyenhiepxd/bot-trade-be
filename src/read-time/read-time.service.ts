@@ -1,6 +1,6 @@
 import { Book, BookDocument } from "@/book/book.schema"
 import { Category, CategoryDocument } from "@/category/category.schema"
-import { ReadTimeDocument } from "@/read-time/read-time.schema"
+import { ReadTime, ReadTimeDocument } from "@/read-time/read-time.schema"
 import { Tracker, TrackerDocument } from "@/tracker/tracker.schema"
 import { UserDocument } from "@/user/user.schema"
 import { BadRequestException, Inject, Injectable } from "@nestjs/common"
@@ -17,26 +17,41 @@ export class ReadTimeService {
     @InjectModel(Book.name) private bookModel: Model<BookDocument>,
     @InjectModel(Tracker.name) private trackerModel: Model<TrackerDocument>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
-    @InjectModel(Category.name) private readTimeModel: Model<ReadTimeDocument>
+    @InjectModel(ReadTime.name) private readTimeModel: Model<ReadTimeDocument>
   ) {}
 
   async create(createReadTimeDto: CreateReadTimeDto) {
-    if (!createReadTimeDto.bookId) {
+    if (!createReadTimeDto?.bookId) {
       throw new BadRequestException("BookId is required")
     }
-    const book = await this.bookModel.findOne({ id: createReadTimeDto.bookId })
+    const book = await this.bookModel.findOne({ _id: createReadTimeDto.bookId })
     if (!book) {
       throw new BadRequestException("Book not found")
     }
-
+    //
     const { user } = this.request
-    const userId = user.id
+    const userId = user?.id
+    const readTimeOld = await this.readTimeModel.findOne({ bookId: createReadTimeDto.bookId }).sort({ createdAt: -1 })
+    if (readTimeOld) {
+      if (readTimeOld.createdAt) {
+        const time = new Date().getTime() - readTimeOld.createdAt.getTime()
+        // console.log("new Date().getTime(): ", new Date(readTimeOld.createdAt.getTime()))
+        // console.log("new Date().getTime(): ", new Date())
+        // console.log("readTimeOld.createdAt.getTime(): ", readTimeOld.createdAt.getTime())
+        // console.log("time", time)
+        // TODO: time < 60s => false
+        if (time < 60000) {
+          return false
+        }
+      }
+    }
 
-    const readTimeOld = await this.readTimeModel.findOne({ bookId: createReadTimeDto.bookId })
-
-    const readTime = new this.readTimeModel(createReadTimeDto)
+    const readTime = new this.readTimeModel({
+      bookId: createReadTimeDto.bookId,
+      ownerId: userId,
+    })
     await readTime.save()
-    return "This action adds a new readTime";
+    return true
   }
 
   findAll() {

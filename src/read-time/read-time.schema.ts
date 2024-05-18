@@ -11,8 +11,8 @@ export class ReadTime {
   @Prop({ required: true })
   bookId: string
 
-  @Prop({ required: true, default: Date.now() })
-  lastVisit: Date
+  // @Prop({ required: true, default: Date.now() })
+  // lastVisit: Date
 
   @Prop({ required: true, default: Date.now() })
   createdAt: Date
