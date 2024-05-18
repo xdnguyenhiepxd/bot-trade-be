@@ -1,6 +1,7 @@
 import { CreateBookDto, GetBookDto } from "@/book/book.dto"
 import { Category, CategoryDocument } from "@/category/category.schema"
 import { ESortType } from "@/dtos/paginate.dto"
+import { Reactions, ReactionsDocument } from "@/reactions/reactions.schema"
 import { Tracker, TrackerDocument } from "@/tracker/tracker.schema"
 import { UserDocument } from "@/user/user.schema"
 import { BadRequestException, Inject, Injectable } from "@nestjs/common"
@@ -16,6 +17,7 @@ export class BookService {
     @InjectModel(Book.name) private bookModel: Model<BookDocument>,
     @InjectModel(Tracker.name) private trackerModel: Model<TrackerDocument>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
+    @InjectModel(Reactions.name) private reactionModel: Model<ReactionsDocument>,
     private readonly imageKitService: ImageGateway
   ) {}
 
@@ -69,7 +71,15 @@ export class BookService {
   }
 
   async get(_id: string) {
-    return this.bookModel.findOne({ _id })
+    console.log({ book: _id, user: this.request.user })
+
+    const book = await this.bookModel.findOne({ _id })
+    const reaction = await this.reactionModel.findOne({ ownerId: this.request.user._id, bookId: _id })
+    const isLiked = !!reaction
+    return {
+      ...book.toObject(),
+      isLiked,
+    }
   }
 
   async upload(name: string, file: any) {
