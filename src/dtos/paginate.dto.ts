@@ -36,5 +36,5 @@ export class PaginateDto {
     default: ESortType.DESC,
   })
   @IsOptional()
-  sort_type?: ESortType
+  sortType?: ESortType
 }

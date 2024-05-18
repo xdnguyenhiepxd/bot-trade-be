@@ -50,7 +50,7 @@ export class BookService {
   }
 
   async list(query: GetBookDto) {
-    const { take = 20, page = 1, categoryId, search = "", sort_type } = query
+    const { take = 20, page = 1, categoryId, search = "", sortType } = query
 
     let queryBuilder = this.bookModel.find()
 
@@ -63,7 +63,7 @@ export class BookService {
     }
 
     queryBuilder = queryBuilder
-      .sort({ createdAt: sort_type === ESortType.ASC ? -1 : 1 })
+      .sort({ createdAt: sortType === ESortType.ASC ? -1 : 1 })
       .skip((page - 1) * take)
       .limit(take)
 
