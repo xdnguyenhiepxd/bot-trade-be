@@ -3,11 +3,12 @@ import { JwtModule } from "@nestjs/jwt"
 import { MongooseModule } from "@nestjs/mongoose"
 import { PassportModule } from "@nestjs/passport"
 import { BookModule } from "./book/book.module"
+import { CategoryModule } from "./category/category.module"
 import environments from "./helpers/environments"
+import { ReadTimeModule } from "./read-time/read-time.module"
 import { TrackerModule } from "./tracker/tracker.module"
 import { UserModule } from "./user/user.module"
-import { CategoryModule } from './category/category.module';
-import { ReadTimeModule } from './read-time/read-time.module';
+import { ReactionsModule } from './reactions/reactions.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ReadTimeModule } from './read-time/read-time.module';
     TrackerModule,
     CategoryModule,
     ReadTimeModule,
+    ReactionsModule,
   ],
 })
 export class AppModule {}
