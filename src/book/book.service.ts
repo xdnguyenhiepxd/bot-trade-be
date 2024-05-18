@@ -71,8 +71,6 @@ export class BookService {
   }
 
   async get(_id: string) {
-    console.log({ book: _id, user: this.request.user })
-
     const book = await this.bookModel.findOne({ _id })
     const reaction = await this.reactionModel.findOne({ ownerId: this.request.user._id, bookId: _id })
     const isLiked = !!reaction
