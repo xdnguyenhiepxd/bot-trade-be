@@ -5,7 +5,7 @@ export class CreateBookDto {
   @ApiProperty()
   name: string
 
-  @ApiProperty()
+  @ApiProperty({ default: "66479582114a6d9d9e6678d2" })
   categoryId: string
 
   @ApiPropertyOptional({
