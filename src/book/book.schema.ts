@@ -13,6 +13,9 @@ export class Book {
 
   @Prop({ default: "http://www.gravatar.com/avatar/?d=identicon" })
   thumbnail: string
+
+  @Prop({ default: "" })
+  categoryId: string
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book)

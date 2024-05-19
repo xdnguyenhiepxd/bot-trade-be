@@ -21,7 +21,7 @@ export class CategoryController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    console.log("id", id) // console by M-MON
+    console.log("id", id)
     return this.categoryService.findOne(id)
   }
 

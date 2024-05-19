@@ -30,7 +30,7 @@ export class BookModule implements OnApplicationBootstrap {
     console.log("[BookModule] onApplicationBootstrap")
     // const categories = await this.categoryModel.find()
     // const randomCategory = categories[Math.floor(Math.random() * categories.length)]
-    // console.log("randomCategory", randomCategory) // console by M-MON
+    // console.log("randomCategory", randomCategory)
   }
 
   async crawlWebApp(url: string, type: "html" | "txt" = "html"): Promise<any> {
@@ -85,8 +85,8 @@ export class BookModule implements OnApplicationBootstrap {
             const title = $(element).find("a").attr("title")
             const hrefImg = $(element).find("img").attr("src")
             // const textContent = htmlToText(htmlContent);
-            console.log("hrefValue", hrefValue) // console by M-MON
-            console.log("hrefImg", hrefImg) // console by M-MON
+            console.log("hrefValue", hrefValue)
+            console.log("hrefImg", hrefImg)
             array.push({
               href: hrefValue,
               title,

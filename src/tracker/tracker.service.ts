@@ -28,7 +28,7 @@ export class TrackerService {
       userId: user._id.toString(),
       _id: trackerId,
     })
-    console.log("trackers", trackers) // console by M-MON
+    console.log("trackers", trackers)
     // trackers.forEach(async (tracker) => {
     //   tracker.updateReadTime = new Date()
     // })

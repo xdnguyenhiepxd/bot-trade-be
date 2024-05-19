@@ -8,7 +8,7 @@ import { UserDocument } from "@/user/user.schema"
 import { BadRequestException, Inject, Injectable } from "@nestjs/common"
 import { REQUEST } from "@nestjs/core"
 import { InjectModel } from "@nestjs/mongoose"
-import { Model } from "mongoose"
+import { FilterQuery, Model } from "mongoose"
 import { ImageGateway } from "src/services/image.gateway.service"
 import { Book, BookDocument } from "./book.schema"
 @Injectable()
@@ -25,7 +25,7 @@ export class BookService {
   // async onApplicationBootstrap() {
   //   const categories = await this.categoryModel.find()
   //   const randomCategory = categories[Math.floor(Math.random() * categories.length)]
-  //   console.log("randomCategory", randomCategory) // console by M-MON
+  //   console.log("randomCategory", randomCategory)
   // }
 
   async create(books: CreateBookDto) {
@@ -53,20 +53,22 @@ export class BookService {
   async list(query: GetBookDto) {
     const { take = 10, page = 1, categoryId, search = "", sortType } = query
 
-    let queryBuilder = this.bookModel.find()
+    const filter: FilterQuery<BookDocument> = {}
 
     if (categoryId) {
-      queryBuilder = queryBuilder.where("categoryId", categoryId)
+      filter.categoryId = categoryId
     }
 
     if (search) {
-      queryBuilder = queryBuilder.where("name", new RegExp(search, "i"))
+      filter.name = { $regex: search, $options: "i" }
     }
 
-    queryBuilder = queryBuilder
+    const queryBuilder = this.bookModel
+      .find(filter)
       .sort({ createdAt: sortType === ESortType.ASC ? -1 : 1 })
       .skip((page - 1) * take)
       .limit(take)
+
     const list = await queryBuilder.exec()
 
     const bookIds = list.map((book) => book._id.toString())
