@@ -1,6 +1,8 @@
 import { CreateBookDto, GetBookDto } from "@/book/book.dto"
 import { Category, CategoryDocument } from "@/category/category.schema"
 import { ESortType } from "@/dtos/paginate.dto"
+import { ETypeReaction } from "@/reactions/dto/create-reaction.dto"
+import { Reactions, ReactionsDocument } from "@/reactions/reactions.schema"
 import { Tracker, TrackerDocument } from "@/tracker/tracker.schema"
 import { UserDocument } from "@/user/user.schema"
 import { BadRequestException, Inject, Injectable } from "@nestjs/common"
@@ -16,6 +18,7 @@ export class BookService {
     @InjectModel(Book.name) private bookModel: Model<BookDocument>,
     @InjectModel(Tracker.name) private trackerModel: Model<TrackerDocument>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
+    @InjectModel(Reactions.name) private reactionModel: Model<ReactionsDocument>,
     private readonly imageKitService: ImageGateway
   ) {}
 
@@ -48,7 +51,7 @@ export class BookService {
   }
 
   async list(query: GetBookDto) {
-    const { take = 1, page = 1, categoryId, search = "", sort_type } = query
+    const { take = 10, page = 1, categoryId, search = "", sort_type } = query
 
     let queryBuilder = this.bookModel.find()
 
@@ -56,16 +59,42 @@ export class BookService {
       queryBuilder = queryBuilder.where("categoryId", categoryId)
     }
 
-    if (search) {
-      queryBuilder = queryBuilder.where("name", new RegExp(search, "i"))
-    }
+    // if (search) {
+    //   queryBuilder = queryBuilder.where("name", new RegExp(search, "i"))
+    // }
 
     queryBuilder = queryBuilder
       .sort({ createdAt: sort_type === ESortType.ASC ? -1 : 1 })
       .skip((page - 1) * take)
       .limit(take)
+    const list = await queryBuilder.exec()
 
-    return queryBuilder.exec()
+    const bookIds = list.map((book) => book._id.toString())
+
+    const reactions = await this.reactionModel.aggregate([
+      { $match: { bookId: { $in: bookIds } } },
+      { $group: { _id: "$bookId", reactions: { $push: "$type" } } },
+    ])
+
+    const reactionCounts = reactions.reduce((acc, { _id, reactions }) => {
+      acc[_id] = {
+        likeTotal: reactions.filter((type) => type === ETypeReaction.LIKE).length,
+        dislikeTotal: reactions.filter((type) => type === ETypeReaction.DISLIKE).length,
+      }
+      return acc
+    }, {})
+
+    const newList = list.map((book) => {
+      const bookId = book._id.toString()
+      const { likeTotal = 0, dislikeTotal = 0 } = reactionCounts[bookId] || {}
+      return {
+        ...book.toJSON(),
+        likeTotal,
+        dislikeTotal,
+      }
+    })
+
+    return newList
   }
 
   async get(_id: string) {

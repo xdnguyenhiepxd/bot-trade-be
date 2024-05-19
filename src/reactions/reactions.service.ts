@@ -15,8 +15,8 @@ export class ReactionsService {
   constructor(
     @Inject(REQUEST) private readonly request: { user: UserDocument },
     @InjectModel(Book.name) private bookModel: Model<BookDocument>,
-    @InjectModel(Tracker.name) private trackerModel: Model<TrackerDocument>,
-    @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
+    // @InjectModel(Tracker.name) private trackerModel: Model<TrackerDocument>,
+    // @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
     @InjectModel(Reactions.name) private reactionModel: Model<ReactionsDocument>
   ) {}
 
