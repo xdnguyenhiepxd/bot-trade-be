@@ -9,6 +9,7 @@ import { ReadTimeModule } from "./read-time/read-time.module"
 import { TrackerModule } from "./tracker/tracker.module"
 import { UserModule } from "./user/user.module"
 import { ReactionsModule } from './reactions/reactions.module';
+import { CrawlModule } from './crawl/crawl.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ReactionsModule } from './reactions/reactions.module';
     CategoryModule,
     ReadTimeModule,
     ReactionsModule,
+    CrawlModule,
   ],
 })
 export class AppModule {}
