@@ -106,10 +106,12 @@ export class CrawlModule implements OnApplicationBootstrap {
 
         const { linkBook = "" } = await this.crawlService.crawlWebApp(crawl?.urlDetail, "html", TypeCrawl.DETAIL)
         const urlDocs = await this.crawlService.crawlWebApp(linkBook, "html", TypeCrawl.DOC)
-        console.log("[urlDocs]", urlDocs) // console by M-MON
-        crawl.uri = urlDocs
-        const data = await this.crawlModel.create(crawl)
-        console.log("[SUCCESS] [CrawlModule] [initCrawl] data", data)
+        if (typeof urlDocs === "string") {
+          console.log("[urlDocs]", urlDocs) // console by M-MON
+          crawl.uri = urlDocs
+          const data = await this.crawlModel.create(crawl)
+          console.log("[SUCCESS] [CrawlModule] [initCrawl] data", data)
+        }
       }
     }
 

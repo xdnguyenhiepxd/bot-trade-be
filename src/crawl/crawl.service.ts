@@ -32,15 +32,15 @@ export class CrawlService {
         "--disable-features=site-per-process",
       ],
     })
-    console.log("🚀 ~ CrawlService ~ browser:", browser)
+    // console.log("🚀 ~ CrawlService ~ browser:", browser)
     try {
       const page: any = await browser.newPage()
       page.on("framenavigated", (frame) => {
-        console.log("Frame navigated: " + frame.name())
+        // console.log("Frame navigated: " + frame.name())
       })
 
       page.on("framedetached", (frame) => {
-        console.log("Frame detached: " + frame.name())
+        // console.log("Frame detached: " + frame.name())
       })
       page.setDefaultNavigationTimeout(60)
       await page.setUserAgent(randomUserAgent(false))
