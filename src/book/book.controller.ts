@@ -12,19 +12,26 @@ export class BookController {
 
   @Post()
   async createBook(@Body() dto: CreateBookDto) {
-    return await this.bookService.create(dto)
+    return this.bookService.create(dto)
   }
 
   @Get()
-  async userBooks(@Query() query: GetBookDto) {
-    return await this.bookService.list(query)
+  async list(@Query() query: GetBookDto) {
+    return this.bookService.list(query)
+  }
+
+  @Get("liked")
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  async liked() {
+    return this.bookService.liked()
   }
 
   @Get(":id")
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   async book(@Param("id") id: string) {
-    return await this.bookService.get(id)
+    return this.bookService.get(id)
   }
 
   @Post("upload")
@@ -42,7 +49,6 @@ export class BookController {
     },
   })
   async uploadEbook(@Body() dto: { name: string }, @UploadedFile() file: any) {
-    const ebook = await this.bookService.upload(dto.name, file)
-    return ebook
+    return this.bookService.upload(dto.name, file)
   }
 }

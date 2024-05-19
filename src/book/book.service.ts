@@ -101,6 +101,11 @@ export class BookService {
     }
   }
 
+  async liked() {
+    const reactions = await this.reactionModel.find({ ownerId: this.request.user.id })
+    return this.bookModel.find({ _id: { $in: reactions.map((e) => e.bookId) } })
+  }
+
   async get(_id: string) {
     const book = await this.bookModel.findOne({ _id })
     const tracker = await this.trackerModel.findOne({ bookId: _id, userId: this.request.user.id })
