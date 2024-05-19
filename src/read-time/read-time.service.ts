@@ -100,7 +100,7 @@ export class ReadTimeService {
     let result
     if (typeTime === ETypeTime.DAY) {
       result = new Array(24).fill(0).map((_, index) => ({
-        time: `${index}h`,
+        time: index % 4 !== 0 ? "" : `${index + 1}:00`,
         value: 0,
       }))
     } else if (typeTime === ETypeTime.WEEK) {
@@ -111,10 +111,11 @@ export class ReadTimeService {
     } else if (typeTime === ETypeTime.MONTH) {
       // Get the number of days in the current month
       const now = new Date()
+      const month = now.getMonth()
       const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
 
       result = new Array(daysInMonth).fill(0).map((_, index) => ({
-        time: `${index + 1}`,
+        time: index % 5 !== 0 ? "" : `${index + 1}/${month}`,
         value: 0,
       }))
     } else if (typeTime === ETypeTime.YEAR) {
