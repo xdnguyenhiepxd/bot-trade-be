@@ -90,9 +90,13 @@ export class CrawlModule implements OnApplicationBootstrap {
       // }
 
       const crawls = await this.crawlService.crawlWebApp(url)
-      console.log("[CrawlModule] [URL] [LENGTH]", crawls.length)
 
-      for (const crawl of crawls) {
+      // Cắt chỉ lấy 15 phần tủ
+      const _crawls = crawls.slice(0, 15)
+
+      console.log("[CrawlModule] [URL] [LENGTH]", _crawls.length)
+
+      for (const crawl of _crawls) {
         console.log("[CRAWL] [URL]", crawl.urlDetail) // console by M-MON
         const crawlExist = await this.crawlModel.findOne({ urlDetail: crawl?.urlDetail, name: crawl?.name })
         if (!!crawlExist?.uri) {

@@ -81,12 +81,14 @@ export class CrawlService {
         })
 
         if (typeCrawl === TypeCrawl.DOC) {
+          await browser.close()
           return "https://www.dtv-ebook.com/" + epubUrl
         }
         const contentElements = $(".hide-for-small-only")
         const categoryElements = $(".tieu_de")
         const linkBook = $(".button.alert.radius.tiny ").attr("href")
         if (typeCrawl === TypeCrawl.DETAIL) {
+          await browser.close()
           return {
             linkBook: linkBook,
           }
@@ -112,6 +114,7 @@ export class CrawlService {
           console.log("Không tìm thấy phần tử với class đã chỉ định.")
         }
       }
+      await browser.close()
       return array
     } catch (error) {
       console.error("[ERROR crawlWebApp]:", error)
