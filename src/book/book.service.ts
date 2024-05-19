@@ -103,10 +103,12 @@ export class BookService {
 
   async get(_id: string) {
     const book = await this.bookModel.findOne({ _id })
+    const tracker = await this.trackerModel.findOne({ bookId: _id, userId: this.request.user.id })
     const reaction = await this.reactionModel.findOne({ ownerId: this.request.user._id, bookId: _id })
     const isLiked = !!reaction
     return {
       ...book.toObject(),
+      tracker,
       isLiked,
     }
   }
