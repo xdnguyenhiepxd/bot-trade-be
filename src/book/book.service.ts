@@ -51,7 +51,7 @@ export class BookService {
   }
 
   async list(query: GetBookDto) {
-    const { take = 10, page = 1, categoryId, search = "", sort_type } = query
+    const { take = 1, page = 1, categoryId, search = "", sortType } = query
 
     let queryBuilder = this.bookModel.find()
 
@@ -59,12 +59,12 @@ export class BookService {
       queryBuilder = queryBuilder.where("categoryId", categoryId)
     }
 
-    // if (search) {
-    //   queryBuilder = queryBuilder.where("name", new RegExp(search, "i"))
-    // }
+    if (search) {
+      queryBuilder = queryBuilder.where("name", new RegExp(search, "i"))
+    }
 
     queryBuilder = queryBuilder
-      .sort({ createdAt: sort_type === ESortType.ASC ? -1 : 1 })
+      .sort({ createdAt: sortType === ESortType.ASC ? -1 : 1 })
       .skip((page - 1) * take)
       .limit(take)
     const list = await queryBuilder.exec()
@@ -94,11 +94,21 @@ export class BookService {
       }
     })
 
-    return newList
+    const count = await this.bookModel.count(queryBuilder)
+    return {
+      data: newList,
+      count,
+    }
   }
 
   async get(_id: string) {
-    return this.bookModel.findOne({ _id })
+    const book = await this.bookModel.findOne({ _id })
+    const reaction = await this.reactionModel.findOne({ ownerId: this.request.user._id, bookId: _id })
+    const isLiked = !!reaction
+    return {
+      ...book.toObject(),
+      isLiked,
+    }
   }
 
   async upload(name: string, file: any) {

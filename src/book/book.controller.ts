@@ -21,10 +21,13 @@ export class BookController {
   }
 
   @Get(":id")
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   async book(@Param("id") id: string) {
     return await this.bookService.get(id)
   }
 
+  @Post("upload")
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @UseInterceptors(FileInterceptor("file"))
@@ -38,7 +41,6 @@ export class BookController {
       },
     },
   })
-  @Post("upload")
   async uploadEbook(@Body() dto: { name: string }, @UploadedFile() file: any) {
     const ebook = await this.bookService.upload(dto.name, file)
     return ebook

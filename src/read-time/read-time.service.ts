@@ -104,7 +104,7 @@ export class ReadTimeService {
         value: 0,
       }))
     } else if (typeTime === ETypeTime.WEEK) {
-      result = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => ({
+      result = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((day) => ({
         time: day,
         value: 0,
       }))
