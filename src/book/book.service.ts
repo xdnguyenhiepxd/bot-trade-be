@@ -51,7 +51,7 @@ export class BookService {
   }
 
   async list(query: GetBookDto) {
-    const { take = 1, page = 1, categoryId, search = "", sortType } = query
+    const { take = 10, page = 1, categoryId, search = "", sortType } = query
 
     let queryBuilder = this.bookModel.find()
 
