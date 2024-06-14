@@ -5,7 +5,6 @@ import { JwtService } from "@nestjs/jwt"
 import { InjectModel } from "@nestjs/mongoose"
 import * as bcrypt from "bcrypt"
 import { Model } from "mongoose"
-import { ImageGateway } from "src/services/image.gateway.service"
 import { Login, Register } from "./user.dto"
 import { User, UserDocument } from "./user.schema"
 @Injectable()
@@ -14,7 +13,6 @@ export class UserService {
     @Inject(REQUEST) private readonly request: { user: UserDocument },
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
-    private readonly imageKitService: ImageGateway
   ) {}
 
   signUser(user: UserDocument) {
@@ -52,9 +50,6 @@ export class UserService {
 
   async updateAvatar(file: any) {
     const user = this.request.user
-    const { thumbnailUrl } = await this.imageKitService.upload(file)
-    user.avatar = thumbnailUrl
-    await user.save()
     return user
   }
 }
