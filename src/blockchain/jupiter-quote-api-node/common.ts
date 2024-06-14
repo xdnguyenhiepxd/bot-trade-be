@@ -41,7 +41,7 @@ async function getQuote(_params: QuoteGetRequest) {
 
   if (!quote) {
     console.log("unable to quote")
-    return;
+    return
   }
   return quote
 }
@@ -58,7 +58,6 @@ async function getSwapObj(wallet: Wallet, quote: QuoteResponse) {
   })
   return swapObj
 }
-
 
 export async function flowQuoteAndSwap(_params?: QuoteGetRequest) {
   const wallet = new Wallet(Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_WALLET_KEY || "")))
@@ -118,4 +117,9 @@ export async function flowQuoteAndSwap(_params?: QuoteGetRequest) {
   }
 
   console.log(`https://solscan.io/tx/${signature}`)
+  return {
+    href: `https://solscan.io/tx/${signature}`,
+    txh: signature,
+  }
+
 }

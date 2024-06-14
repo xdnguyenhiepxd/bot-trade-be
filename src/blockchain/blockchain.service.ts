@@ -1,72 +1,10 @@
-import { QuoteGetRequest, QuoteResponse } from "@/blockchain/jupiter-quote-api-node/generated";
 import { Injectable } from "@nestjs/common"
 import { Wallet } from "@project-serum/anchor"
-import {
-  BlockhashWithExpiryBlockHeight,
-  Connection,
-  Keypair,
-  TransactionExpiredBlockheightExceededError,
-  VersionedTransaction,
-  VersionedTransactionResponse,
-} from "@solana/web3.js"
+import { Connection, Keypair, VersionedTransaction } from "@solana/web3.js"
 import * as bs58 from "bs58"
 import fetch from "cross-fetch"
-import promiseRetry from "promise-retry"
 import { CreateBlockchainDto } from "./dto/create-blockchain.dto"
 import { UpdateBlockchainDto } from "./dto/update-blockchain.dto"
-import { createJupiterApiClient } from "@/blockchain/jupiter-quote-api-node";
-import { flowQuoteAndSwap } from "@/blockchain/jupiter-quote-api-node/common";
-export const wait = (time: number) => new Promise((resolve) => setTimeout(resolve, time))
-type TransactionSenderAndConfirmationWaiterArgs = {
-  connection: Connection
-  serializedTransaction: Buffer
-  blockhashWithExpiryBlockHeight: BlockhashWithExpiryBlockHeight
-}
-
-const SEND_OPTIONS = {
-  skipPreflight: true,
-}
-
-// Make sure that you are using your own RPC endpoint.
-const connection = new Connection(
-  "https://neat-hidden-sanctuary.solana-mainnet.discover.quiknode.pro/2af5315d336f9ae920028bbb90a73b724dc1bbed/"
-)
-const jupiterQuoteApi = createJupiterApiClient()
-
-async function getQuote() {
-  const params: QuoteGetRequest = {
-    inputMint: "So11111111111111111111111111111111111111112",
-    outputMint: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm", // $WIF
-    amount: 100000000, // 0.1 SOL
-    autoSlippage: true,
-    autoSlippageCollisionUsdValue: 1_000,
-    maxAutoSlippageBps: 1000, // 10%
-    minimizeSlippage: true,
-    onlyDirectRoutes: false,
-    asLegacyTransaction: false,
-  }
-
-  // get quote
-  const quote = await jupiterQuoteApi.quoteGet(params)
-
-  if (!quote) {
-    throw new Error("unable to quote")
-  }
-  return quote
-}
-
-async function getSwapObj(wallet: Wallet, quote: QuoteResponse) {
-  // Get serialized transaction
-  const swapObj = await jupiterQuoteApi.swapPost({
-    swapRequest: {
-      quoteResponse: quote,
-      userPublicKey: wallet.publicKey.toBase58(),
-      dynamicComputeUnitLimit: true,
-      prioritizationFeeLamports: "auto",
-    },
-  })
-  return swapObj
-}
 
 @Injectable()
 export class BlockchainService {
@@ -175,10 +113,10 @@ export class BlockchainService {
 
   async onApplicationBootstrap() {
     console.log("[onApplicationBootstrap] [BlockchainService] The application is starting...")
-    const amount = this.solToLamports(0.01)
-    flowQuoteAndSwap({
-      amount,
-      outputMint: "8NH3AfwkizHmbVd83SSxc2YbsFmFL4m2BeepvL6upump",
-    })
+    const amount = this.solToLamports(0.005)
+    // flowQuoteAndSwap({
+    //   amount,
+    //   outputMint: "8NH3AfwkizHmbVd83SSxc2YbsFmFL4m2BeepvL6upump",
+    // })
   }
 }
