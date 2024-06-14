@@ -1,13 +1,12 @@
+import environments from "@/helpers/environments"
+import { RedisModule } from "@/redis/redis.module"
 import { Module } from "@nestjs/common"
+import { ConfigModule } from "@nestjs/config"
+import { JwtModule } from "@nestjs/jwt"
 import { MongooseModule } from "@nestjs/mongoose"
+import { PassportModule } from "@nestjs/passport"
 import { BlockchainModule } from "./blockchain/blockchain.module"
-import environments from "@/helpers/environments";
-import { JwtModule } from "@nestjs/jwt";
-import { PassportModule } from "@nestjs/passport";
-import { UserModule } from "@/user/user.module";
-import { TelegramModule } from './telegram/telegram.module';
-import { ConfigModule } from "@nestjs/config";
-import { RedisModule } from "@/redis/redis.module";
+import { TelegramModule } from "./telegram/telegram.module"
 
 @Module({
   imports: [
@@ -23,7 +22,7 @@ import { RedisModule } from "@/redis/redis.module";
     PassportModule.register({ defaultStrategy: "jwt" }),
     BlockchainModule,
     TelegramModule,
-    RedisModule,
+    // RedisModule,
   ],
 })
 export class AppModule {}

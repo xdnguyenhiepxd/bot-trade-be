@@ -1,4 +1,4 @@
-import { RedisService } from "@/redis/redis.service"
+// import { RedisService } from "@/redis/redis.service"
 import { Injectable } from "@nestjs/common"
 import * as fs from "fs"
 import * as TelegramBot from "node-telegram-bot-api"
@@ -43,7 +43,8 @@ export const buildPhotoOptions = (tableButtons: Menu[][], text: string): PhotoMe
 export class TelegramService {
   user = new Map()
   bot: TelegramBot
-  constructor(private readonly redisService: RedisService) {
+  // constructor(private readonly redisService: RedisService) {
+  constructor() {
     this.bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true })
     this.bot.on("polling_error", console.log)
   }
